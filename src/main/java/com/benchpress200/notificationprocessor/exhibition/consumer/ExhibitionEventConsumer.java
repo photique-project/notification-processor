@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExhibitionEventConsumer {
     private final ObjectMapper objectMapper;
-    private final ExhibitionEventDispatcher exhibitionEventDispatcher;
+    private final ExhibitionEventDispatcher dispatcher;
 
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.retry.attempts}",
@@ -42,6 +42,19 @@ public class ExhibitionEventConsumer {
         String eventType = EventParser.getStringHeader(record, EventHeaderKey.EVENT_TYPE);
 
         try {
+            if(!dispatcher.isSupported(eventType)) {
+                log.info("Skip unsupported exhibition event: eventId={}, eventType={}, key={}, topic={}, partition={}, offset={}",
+                        eventId,
+                        eventType,
+                        record.key(),
+                        record.topic(),
+                        record.partition(),
+                        record.offset()
+                );
+
+                return;
+            }
+
             ExhibitionEventPayload payload = EventParser.getPayload(
                     record,
                     ExhibitionEventPayload.class,
@@ -49,7 +62,7 @@ public class ExhibitionEventConsumer {
             );
 
             // 빈으로 등록한 타입에 맞는 핸들러 찾아서 실행
-            exhibitionEventDispatcher.dispatch(
+            dispatcher.dispatch(
                     eventType,
                     eventId,
                     payload

@@ -32,4 +32,10 @@ public class ExhibitionCommentEventDispatcher {
 
         handler.handle(eventId, payload);
     }
+
+    public boolean isSupported(String eventType) {
+        ExhibitionCommentEventHandler handler = handlers.get(eventType);
+
+        return handler != null;
+    }
 }

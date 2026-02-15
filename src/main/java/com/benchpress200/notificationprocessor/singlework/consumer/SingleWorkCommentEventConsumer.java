@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SingleWorkCommentEventConsumer {
     private final ObjectMapper objectMapper;
-    private final SingleWorkCommentEventDispatcher singleWorkCommentEventDispatcher;
+    private final SingleWorkCommentEventDispatcher dispatcher;
 
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.retry.attempts}",
@@ -42,6 +42,18 @@ public class SingleWorkCommentEventConsumer {
         String eventType = EventParser.getStringHeader(record, EventHeaderKey.EVENT_TYPE);
 
         try {
+            if(!dispatcher.isSupported(eventType)) {
+                log.info("Skip unsupported singlework comment event: eventId={}, eventType={}, key={}, topic={}, partition={}, offset={}",
+                        eventId,
+                        eventType,
+                        record.key(),
+                        record.topic(),
+                        record.partition(),
+                        record.offset()
+                );
+                return;
+            }
+
             SingleWorkCommentEventPayload payload = EventParser.getPayload(
                     record,
                     SingleWorkCommentEventPayload.class,
@@ -49,7 +61,7 @@ public class SingleWorkCommentEventConsumer {
             );
 
             // 빈으로 등록한 타입에 맞는 핸들러 찾아서 실행
-            singleWorkCommentEventDispatcher.dispatch(
+            dispatcher.dispatch(
                     eventType,
                     eventId,
                     payload

@@ -35,4 +35,10 @@ public class FollowEventDispatcher {
 
         handler.handle(eventId, payload);
     }
+
+    public boolean isSupported(String eventType) {
+        FollowEventHandler handler = handlers.get(eventType);
+
+        return handler != null;
+    }
 }

@@ -3,6 +3,7 @@ package com.benchpress200.notificationprocessor.exhibition.dispatch;
 import com.benchpress200.notificationprocessor.exhibition.consumer.payload.ExhibitionEventPayload;
 import com.benchpress200.notificationprocessor.exhibition.dispatch.exception.ExhibitionEventHandlerNotFoundException;
 import com.benchpress200.notificationprocessor.exhibition.handler.ExhibitionEventHandler;
+import com.benchpress200.notificationprocessor.singlework.handler.SingleWorkEventHandler;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -31,5 +32,11 @@ public class ExhibitionEventDispatcher {
         }
 
         handler.handle(eventId, payload);
+    }
+
+    public boolean isSupported(String eventType) {
+        ExhibitionEventHandler handler = handlers.get(eventType);
+
+        return handler != null;
     }
 }

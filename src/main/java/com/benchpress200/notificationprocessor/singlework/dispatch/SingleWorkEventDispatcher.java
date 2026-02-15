@@ -32,4 +32,10 @@ public class SingleWorkEventDispatcher {
 
         handler.handle(eventId, payload);
     }
+
+    public boolean isSupported(String eventType) {
+        SingleWorkEventHandler handler = handlers.get(eventType);
+
+        return handler != null;
+    }
 }

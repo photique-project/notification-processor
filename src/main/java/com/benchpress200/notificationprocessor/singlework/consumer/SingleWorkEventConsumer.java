@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SingleWorkEventConsumer {
     private final ObjectMapper objectMapper;
-    private final SingleWorkEventDispatcher singleWorkEventDispatcher;
+    private final SingleWorkEventDispatcher dispatcher;
 
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.retry.attempts}",
@@ -42,6 +42,18 @@ public class SingleWorkEventConsumer {
         String eventType = EventParser.getStringHeader(record, EventHeaderKey.EVENT_TYPE);
 
         try {
+            if(!dispatcher.isSupported(eventType)) {
+                log.info("Skip unsupported singlework event: eventId={}, eventType={}, key={}, topic={}, partition={}, offset={}",
+                        eventId,
+                        eventType,
+                        record.key(),
+                        record.topic(),
+                        record.partition(),
+                        record.offset()
+                );
+                return;
+            }
+
             SingleWorkEventPayload payload = EventParser.getPayload(
                     record,
                     SingleWorkEventPayload.class,
@@ -49,7 +61,7 @@ public class SingleWorkEventConsumer {
             );
 
             // 빈으로 등록한 타입에 맞는 핸들러 찾아서 실행
-            singleWorkEventDispatcher.dispatch(
+            dispatcher.dispatch(
                     eventType,
                     eventId,
                     payload

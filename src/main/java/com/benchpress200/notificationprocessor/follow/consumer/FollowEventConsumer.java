@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FollowEventConsumer {
     private final ObjectMapper objectMapper;
-    private final FollowEventDispatcher followEventDispatcher;
+    private final FollowEventDispatcher dispatcher;
 
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.retry.attempts}",
@@ -44,6 +44,18 @@ public class FollowEventConsumer {
         String eventType = EventParser.getStringHeader(record, EventHeaderKey.EVENT_TYPE);
 
         try {
+            if(!dispatcher.isSupported(eventType)) {
+                log.info("Skip unsupported follow event: eventId={}, eventType={}, key={}, topic={}, partition={}, offset={}",
+                        eventId,
+                        eventType,
+                        record.key(),
+                        record.topic(),
+                        record.partition(),
+                        record.offset()
+                );
+                return;
+            }
+
             FollowEventPayload payload = EventParser.getPayload(
                     record,
                     FollowEventPayload.class,
@@ -51,7 +63,7 @@ public class FollowEventConsumer {
             );
 
             // 빈으로 등록한 타입에 맞는 핸들러 찾아서 실행
-            followEventDispatcher.dispatch(
+            dispatcher.dispatch(
                     eventType,
                     eventId,
                     payload
