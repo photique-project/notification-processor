@@ -6,7 +6,7 @@ import com.benchpress200.notificationprocessor.notification.record.NotificationR
 import com.benchpress200.notificationprocessor.notification.repository.NotificationRepository;
 import com.benchpress200.notificationprocessor.singlework.consumer.payload.SingleWorkEventPayload;
 import com.benchpress200.notificationprocessor.singlework.handler.SingleWorkEventHandler;
-import com.benchpress200.notificationprocessor.user.repository.FollowRepository;
+import com.benchpress200.notificationprocessor.follow.repository.FollowRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

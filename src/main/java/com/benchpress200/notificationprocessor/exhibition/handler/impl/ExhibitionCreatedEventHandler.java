@@ -6,7 +6,7 @@ import com.benchpress200.notificationprocessor.exhibition.handler.ExhibitionEven
 import com.benchpress200.notificationprocessor.notification.enumeration.NotificationType;
 import com.benchpress200.notificationprocessor.notification.record.NotificationRecord;
 import com.benchpress200.notificationprocessor.notification.repository.NotificationRepository;
-import com.benchpress200.notificationprocessor.user.repository.FollowRepository;
+import com.benchpress200.notificationprocessor.follow.repository.FollowRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

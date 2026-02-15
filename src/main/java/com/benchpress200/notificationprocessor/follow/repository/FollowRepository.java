@@ -1,4 +1,4 @@
-package com.benchpress200.notificationprocessor.user.repository;
+package com.benchpress200.notificationprocessor.follow.repository;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
