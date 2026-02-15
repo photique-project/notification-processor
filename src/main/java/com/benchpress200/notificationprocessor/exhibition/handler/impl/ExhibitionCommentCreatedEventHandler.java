@@ -1,18 +1,18 @@
-package com.benchpress200.notificationprocessor.singlework.handler.impl;
+package com.benchpress200.notificationprocessor.exhibition.handler.impl;
 
 import com.benchpress200.notificationprocessor.common.constant.EventType;
+import com.benchpress200.notificationprocessor.exhibition.consumer.payload.ExhibitionCommentEventPayload;
+import com.benchpress200.notificationprocessor.exhibition.handler.ExhibitionCommentEventHandler;
 import com.benchpress200.notificationprocessor.notification.enumeration.NotificationType;
 import com.benchpress200.notificationprocessor.notification.record.NotificationRecord;
 import com.benchpress200.notificationprocessor.notification.repository.NotificationRepository;
-import com.benchpress200.notificationprocessor.singlework.consumer.payload.SingleWorkCommentEventPayload;
-import com.benchpress200.notificationprocessor.singlework.handler.SingleWorkCommentEventHandler;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SingleWorkCommentCreatedEventHandler implements SingleWorkCommentEventHandler {
+public class ExhibitionCommentCreatedEventHandler implements ExhibitionCommentEventHandler {
     private final NotificationRepository notificationRepository;
 
     @Override
@@ -23,16 +23,16 @@ public class SingleWorkCommentCreatedEventHandler implements SingleWorkCommentEv
     @Override
     public void handle(
             Long eventId,
-            SingleWorkCommentEventPayload payload
+            ExhibitionCommentEventPayload payload
     ) {
-        Long receiverId = payload.getSingleWorkWriterId();
-        Long singleWorkId = payload.getSingleWorkId();
+        Long receiverId = payload.getExhibitionWriterId();
+        Long exhibitionId = payload.getExhibitionId();
         LocalDateTime now = LocalDateTime.now();
 
         NotificationRecord record = NotificationRecord.of(
                 receiverId,
-                NotificationType.SINGLEWORK_COMMENT_CREATED,
-                singleWorkId,
+                NotificationType.EXHIBITION_COMMENT_CREATED,
+                exhibitionId,
                 eventId,
                 now
         );

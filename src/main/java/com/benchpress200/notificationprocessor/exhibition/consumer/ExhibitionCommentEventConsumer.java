@@ -2,8 +2,8 @@ package com.benchpress200.notificationprocessor.exhibition.consumer;
 
 import com.benchpress200.notificationprocessor.common.constant.EventHeaderKey;
 import com.benchpress200.notificationprocessor.common.exception.NonRetryableEventException;
-import com.benchpress200.notificationprocessor.exhibition.consumer.payload.ExhibitionEventPayload;
-import com.benchpress200.notificationprocessor.exhibition.dispatch.ExhibitionEventDispatcher;
+import com.benchpress200.notificationprocessor.exhibition.consumer.payload.ExhibitionCommentEventPayload;
+import com.benchpress200.notificationprocessor.exhibition.dispatch.ExhibitionCommentEventDispatcher;
 import com.benchpress200.notificationprocessor.util.EventParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExhibitionEventConsumer {
+public class ExhibitionCommentEventConsumer {
     private final ObjectMapper objectMapper;
-    private final ExhibitionEventDispatcher exhibitionEventDispatcher;
+    private final ExhibitionCommentEventDispatcher exhibitionCommentEventDispatcher;
 
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.retry.attempts}",
@@ -33,7 +33,7 @@ public class ExhibitionEventConsumer {
             exclude = { NonRetryableEventException.class }
     )
     @KafkaListener(
-            topics = "${spring.kafka.topics.exhibition}",
+            topics = "${spring.kafka.topics.exhibition-comment}",
             groupId = "${spring.kafka.consumer.group-id}"
     )
     public void consume(ConsumerRecord<String, String> record) {
@@ -42,14 +42,14 @@ public class ExhibitionEventConsumer {
         String eventType = EventParser.getStringHeader(record, EventHeaderKey.EVENT_TYPE);
 
         try {
-            ExhibitionEventPayload payload = EventParser.getPayload(
+            ExhibitionCommentEventPayload payload = EventParser.getPayload(
                     record,
-                    ExhibitionEventPayload.class,
+                    ExhibitionCommentEventPayload.class,
                     objectMapper
             );
 
             // 빈으로 등록한 타입에 맞는 핸들러 찾아서 실행
-            exhibitionEventDispatcher.dispatch(
+            exhibitionCommentEventDispatcher.dispatch(
                     eventType,
                     eventId,
                     payload
