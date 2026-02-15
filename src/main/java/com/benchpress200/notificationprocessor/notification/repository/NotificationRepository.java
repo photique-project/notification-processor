@@ -35,4 +35,21 @@ public class NotificationRepository {
                 }
         );
     }
+
+    @Transactional
+    public void insertNotification(NotificationRecord record) {
+        jdbcTemplate.update(
+                """
+                INSERT IGNORE INTO notifications
+                  (receiver_id, type, target_id, is_read, event_id, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                record.receiverId(),
+                record.type(),
+                record.targetId(),
+                record.isRead(),
+                record.eventId(),
+                record.createdAt()
+        );
+    }
 }

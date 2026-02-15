@@ -49,6 +49,7 @@ public class SingleWorkCreatedEventHandler implements SingleWorkEventHandler {
                 break;
             }
 
+            LocalDateTime now = LocalDateTime.now();
 
             List<NotificationRecord> records = followerIds.stream()
                     .map(followerId -> NotificationRecord.of(
@@ -56,7 +57,7 @@ public class SingleWorkCreatedEventHandler implements SingleWorkEventHandler {
                             NotificationType.SINGLEWORK_CREATED,
                             singleWorkId,
                             eventId,
-                            createdAt
+                            now
                     ))
                     .toList();
 
