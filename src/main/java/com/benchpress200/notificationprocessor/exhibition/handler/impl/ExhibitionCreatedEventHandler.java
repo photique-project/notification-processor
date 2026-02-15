@@ -1,11 +1,11 @@
-package com.benchpress200.notificationprocessor.singlework.handler.impl;
+package com.benchpress200.notificationprocessor.exhibition.handler.impl;
 
 import com.benchpress200.notificationprocessor.common.constant.EventType;
+import com.benchpress200.notificationprocessor.exhibition.consumer.payload.ExhibitionEventPayload;
+import com.benchpress200.notificationprocessor.exhibition.handler.ExhibitionEventHandler;
 import com.benchpress200.notificationprocessor.notification.enumeration.NotificationType;
 import com.benchpress200.notificationprocessor.notification.record.NotificationRecord;
 import com.benchpress200.notificationprocessor.notification.repository.NotificationRepository;
-import com.benchpress200.notificationprocessor.singlework.consumer.payload.SingleWorkEventPayload;
-import com.benchpress200.notificationprocessor.singlework.handler.SingleWorkEventHandler;
 import com.benchpress200.notificationprocessor.user.repository.FollowRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,13 +15,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SingleWorkCreatedEventHandler implements SingleWorkEventHandler {
+public class ExhibitionCreatedEventHandler implements ExhibitionEventHandler {
     @Value("${spring.notification.batch-size}")
     private int PAGE_SIZE;
 
     private final FollowRepository followRepository;
     private final NotificationRepository notificationRepository;
-
 
     @Override
     public String getEventType() {
@@ -31,10 +30,10 @@ public class SingleWorkCreatedEventHandler implements SingleWorkEventHandler {
     @Override
     public void handle(
             Long eventId,
-            SingleWorkEventPayload payload
+            ExhibitionEventPayload payload
     ) {
         Long writerId = payload.getWriter().getId();
-        Long singleWorkId = payload.getId();
+        Long exhibitionId = payload.getId();
         long cursor = 0L;
 
         while (true) {
@@ -53,8 +52,8 @@ public class SingleWorkCreatedEventHandler implements SingleWorkEventHandler {
             List<NotificationRecord> records = followerIds.stream()
                     .map(followerId -> NotificationRecord.of(
                             followerId,
-                            NotificationType.SINGLEWORK_CREATED,
-                            singleWorkId,
+                            NotificationType.EXHIBITION_CREATED,
+                            exhibitionId,
                             eventId,
                             now
                     ))

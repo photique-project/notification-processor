@@ -9,7 +9,7 @@ public enum NotificationType {
     SINGLEWORK_LIKED("singleWorkLiked"),
     SINGLEWORK_COMMENT_CREATED("singleworkCommentCreated"),
 
-    EXHIBITION_CREATED("ExhibitionCreated"),
+    EXHIBITION_CREATED("exhibitionCreated"),
     EXHIBITION_LIKED("exhibitionLiked"),
     EXHIBITION_COMMENT_CREATED("exhibitionCommentCreated"),
 
